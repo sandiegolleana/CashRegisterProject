@@ -1,0 +1,19 @@
+
+===== Transaction Record =====
+Date/Time: 2025-06-06 19:36:05
+Username: sandiego
+1x AIRism Cotton T-Shirt @ Php 590.0 = Php 590.0
+1x Ultra Stretch Jeans @ Php 1990.0 = Php 1990.0
+1x Pocketable Parka @ Php 2490.0 = Php 2490.0
+Total: Php 5070.0
+==============================
+
+===== Transaction Record =====
+Date/Time: 2025-06-06 19:37:10
+Username: sandiego
+1x Ultra Stretch Jeans @ Php 1990.0 = Php 1990.0
+2x AIRism Cotton T-Shirt @ Php 590.0 = Php 1180.0
+1x U Crew Neck Short Sleeve @ Php 790.0 = Php 790.0
+1x Smart Ankle Pants @ Php 1990.0 = Php 1990.0
+Total: Php 5950.0
+==============================

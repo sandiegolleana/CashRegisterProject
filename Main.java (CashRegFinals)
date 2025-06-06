@@ -1,0 +1,289 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.main;
+
+/**
+ *
+ * @author wgcar
+ */
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+class Product {
+    String name;
+    int quantity;
+    double price;
+
+    public Product(String name, int quantity, double price) {
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return quantity + "x " + name + " @ Php " + price + " each = Php " + (price * quantity);
+    }
+}
+
+class User {
+    String username;
+    String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+}
+
+public class Main {
+    static ArrayList<Product> cart = new ArrayList<>();
+    static ArrayList<User> users = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+    static String currentUser = "";
+
+    public static void main(String[] args) {
+        System.out.println("WELCOME UNIQLO LOVERS! <3");
+        System.out.println("---------------------------------------------------------------------------------------");
+
+        boolean loggedIn = false;
+        while (!loggedIn) {
+            System.out.println("\nCreate your account by signing up. Once you've signed up, proceed to log in to your account.");
+            System.out.println("1. Signup");
+            System.out.println("2. Login");
+            System.out.print("Select an option (1 / 2): ");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (option) {
+                case 1 -> signup();
+                case 2 -> loggedIn = login();
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        cashRegister();
+    }
+
+    public static void signup() {
+        String usernameRegex = "^[a-zA-Z0-9]{5,15}$";
+        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,20}$";
+
+        String username;
+        while (true) {
+            System.out.print("\nEnter username (alphanumeric, 5â€“15 chars): ");
+            username = scanner.nextLine();
+            if (Pattern.matches(usernameRegex, username)) {
+                break;
+            } else {
+                System.out.println("Invalid username format. Try again.");
+            }
+        }
+
+        String password;
+        while (true) {
+            System.out.print("Enter password (1 uppercase, 1 number, 8â€“20 chars): ");
+            password = scanner.nextLine();
+            if (Pattern.matches(passwordRegex, password)) {
+                break;
+            } else {
+                System.out.println("Invalid password format. Try again.");
+            }
+        }
+
+        users.add(new User(username, password));
+        System.out.println("\nSignup successful! You can now log in.");
+    }
+
+    public static boolean login() {
+        System.out.print("\nEnter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        for (User user : users) {
+            if (user.username.equals(username) && user.password.equals(password)) {
+                System.out.println("Login successful! Welcome, " + username + ".");
+                currentUser = username;
+                return true;
+            }
+        }
+        System.out.println("Invalid credentials. Please try again.");
+        return false;
+    }
+
+    public static void cashRegister() {
+        boolean continueTransaction = true;
+
+        while (continueTransaction) {
+            System.out.println("\n==================== UNIQLO CASH REGISTER ====================");
+            System.out.println("1. Add Product");
+            System.out.println("2. Show Total");
+            System.out.println("3. Check Out");
+            System.out.println("4. Remove Product");
+            System.out.println("5. Exit");
+            System.out.print("Select an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> addProduct();
+                case 2 -> showTotal();
+                case 3 -> checkOut();
+                case 4 -> removeProduct();
+                case 5 -> {
+                    continueTransaction = false;
+                    System.out.println("Thank you for choosing UNIQLO Clothing! <3");
+                }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    public static void addProduct() {
+        System.out.println("\nAvailable Uniqlo Products:");
+        System.out.println("1. AIRism Cotton T-Shirt | Php590.00");
+        System.out.println("2. Ultra Stretch Jeans | Php1990.00");
+        System.out.println("3. U Crew Neck Short Sleeve | Php790.00");
+        System.out.println("4. Pocketable Parka | Php2490.00");
+        System.out.println("5. Smart Ankle Pants | Php1990.00");
+
+        System.out.print("Select a product (1-5): ");
+        int productChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        String name = "";
+        double price = 0;
+
+        switch (productChoice) {
+            case 1 -> {
+                name = "AIRism Cotton T-Shirt";
+                price = 590;
+            }
+            case 2 -> {
+                name = "Ultra Stretch Jeans";
+                price = 1990;
+            }
+            case 3 -> {
+                name = "U Crew Neck Short Sleeve";
+                price = 790;
+            }
+            case 4 -> {
+                name = "Pocketable Parka";
+                price = 2490;
+            }
+            case 5 -> {
+                name = "Smart Ankle Pants";
+                price = 1990;
+            }
+            default -> {
+                System.out.println("Invalid choice. Returning to menu.");
+                return;
+            }
+        }
+
+        System.out.print("Enter quantity: ");
+        int quantity = scanner.nextInt();
+
+        cart.add(new Product(name, quantity, price));
+        System.out.println(quantity + "x " + name + " added to cart.");
+    }
+
+    public static void showTotal() {
+        if (cart.isEmpty()) {
+            System.out.println("\nCart is empty.");
+            return;
+        }
+
+        double total = 0;
+        System.out.println("\nCart Items:");
+        for (Product p : cart) {
+            System.out.println(p);
+            total += p.price * p.quantity;
+        }
+        System.out.println("Total Price: Php " + total);
+    }
+
+    public static void checkOut() {
+        showTotal();
+
+        if (cart.isEmpty()) return;
+
+        System.out.print("\nEnter payment amount: Php ");
+        double payment = scanner.nextDouble();
+
+        double total = 0;
+        List<String> itemList = new ArrayList<>();
+        List<Double> itemTotals = new ArrayList<>();
+
+        for (Product p : cart) {
+            double subtotal = p.price * p.quantity;
+            total += subtotal;
+            itemList.add(p.quantity + "x " + p.name + " @ Php " + p.price);
+            itemTotals.add(subtotal);
+        }
+
+        if (payment >= total) {
+            double change = payment - total;
+            System.out.println("Payment accepted. Change: Php " + change);
+            logTransaction(currentUser, itemList, itemTotals, total);
+            cart.clear();
+            System.out.println("Cart is now empty.");
+        } else {
+            System.out.println("Insufficient payment. Please try again.");
+        }
+    }
+
+    public static void removeProduct() {
+        if (cart.isEmpty()) {
+            System.out.println("\nCart is empty.");
+            return;
+        }
+
+        System.out.println("Cart Items:");
+        for (int i = 0; i < cart.size(); i++) {
+            System.out.println((i + 1) + ". " + cart.get(i));
+        }
+
+        System.out.print("Enter product number to remove: ");
+        int removeIndex = scanner.nextInt() - 1;
+
+        if (removeIndex >= 0 && removeIndex < cart.size()) {
+            System.out.println(cart.get(removeIndex).name + " removed from cart.");
+            cart.remove(removeIndex);
+        } else {
+            System.out.println("Invalid selection.");
+        }
+    }
+
+    public static void logTransaction(String username, List<String> items, List<Double> itemTotals, double total) {
+        try (FileWriter writer = new FileWriter("transactions.txt", true)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String timestamp = LocalDateTime.now().format(formatter);
+
+            writer.write("\n===== Transaction Record =====\n");
+            writer.write("Date/Time: " + timestamp + "\n");
+            writer.write("Username: " + username + "\n");
+
+            for (int i = 0; i < items.size(); i++) {
+                writer.write(items.get(i) + " = Php " + itemTotals.get(i) + "\n");
+            }
+
+            writer.write("Total: Php " + total + "\n");
+            writer.write("==============================\n");
+            System.out.println("Transaction successfully logged to 'transactions.txt'");
+        } catch (IOException e) {
+            System.out.println("Error writing transaction: " + e.getMessage());
+        }
+    }
+}
